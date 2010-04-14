@@ -1,3 +1,4 @@
+using System;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace TfsHistory
@@ -11,7 +12,7 @@ namespace TfsHistory
                 return extended.WorkItems[0].Id;
             }
             
-            return null;
+            return Int32.MinValue;
         }
     }
 }

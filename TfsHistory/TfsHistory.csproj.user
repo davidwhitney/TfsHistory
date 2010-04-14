@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>/file="c:\temp.csv" /server="jgtfs01" /path="$/GivingGroup/Base"</StartArguments>
+    <StartArguments>/file="c:\temp.csv" /server="jgtfs01" /path="$/GivingGroup/Base/DPQ5/Website"</StartArguments>
   </PropertyGroup>
 </Project>

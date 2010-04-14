@@ -66,8 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="CsvEntry.cs" />
+    <Compile Include="HistoryCsvEntry.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="ModifiedFilesCsvEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TfsHistoryExporter.cs" />
   </ItemGroup>

@@ -24,28 +24,40 @@ namespace TfsHistory
                };
             parameters.Parse(args);
 
-            var historyExporter = new TfsHistoryExporter();
-            historyExporter.VersionStart = VersionSpec.ParseSingleSpec("40800", "");
-            historyExporter.TfsPath = TfsPath;
-            historyExporter.TfsServer = TfsServer;
-            historyExporter.OutputLocation = OutputLocation;
+            var historyExporter = new TfsHistoryExporter(TfsServer);
+            
+            //var changes = historyExporter.RetrieveAllHistory(TfsPath);
+            var changes = historyExporter.RetrieveAllModifiedFilesForPath(TfsPath);
+            var csvEntries = changes.Select(change => BuildHistoryCsvEntry(change)).ToList();
 
-            var changes = historyExporter.RetrieveHistory();
+            //var csvEntries = changes.Select(change => BuildHistoryCsvEntry(change)).ToList();
 
-            var csvEntries = changes.Select(change => BuildCsvEntry(change)).ToList();
-            var csvEngine = new FileHelperEngine<CsvEntry>();
+            var csvEngine = new FileHelperEngine<ModifiedFilesCsvEntry>();
             csvEngine.WriteFile(OutputLocation, csvEntries);
 
         }
 
-        private static CsvEntry BuildCsvEntry(Changeset change)
+        private static ModifiedFilesCsvEntry BuildHistoryCsvEntry(KeyValuePair<string, ChangeType> modifiedFile)
         {
-            var entry = new CsvEntry();
-            entry.Date = change.CreationDate;
-            entry.ChangesetId = change.ChangesetId;
-            entry.WorkItems = change.WorkItems.Aggregate(string.Empty, (current, workItem) => current + string.Format("{0}: {1}, ", workItem.Id, workItem.Title)).Trim().TrimEnd(',').Replace('"',' ');
-            entry.Committer = change.Committer;
-            entry.Comment = change.Comment.Trim().TrimEnd(',').Replace('"', ' ');
+            var entry = new ModifiedFilesCsvEntry
+                        {
+                            Path = modifiedFile.Key,
+                            ChangeType = modifiedFile.Value
+                            
+                        };
+            return entry;
+        }
+
+        private static HistoryCsvEntry BuildHistoryCsvEntry(Changeset change)
+        {
+            var entry = new HistoryCsvEntry
+                        {
+                            Date = change.CreationDate,
+                            ChangesetId = change.ChangesetId,
+                            Committer = change.Committer,
+                            Comment = change.Comment.Trim().TrimEnd(',').Replace('"', ' '),
+                            WorkItems = change.WorkItems.Aggregate(string.Empty, (current, workItem) => current + string.Format("{0}: {1}, ", workItem.Id, workItem.Title)).Trim().TrimEnd(',').Replace('"', ' ')
+                        };
             return entry;
         }
     }
